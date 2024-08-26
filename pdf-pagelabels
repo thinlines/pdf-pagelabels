@@ -93,11 +93,7 @@ def main():
         dest="page_range",
         action="append",
     )
-    test_args = [
-        "" if s == '""' else s for s in '/home/randy/in.pdf /home/randy/out.pdf 1-2 -p "" 3-end -s D'.split()
-    ]
-    io_args = parser.parse_args(test_args)
-    # io_args = parser.parse_args()
+    io_args = parser.parse_args()
 
     page_label_parser = argparse.ArgumentParser()
     page_label_parser.add_argument("page_range")
