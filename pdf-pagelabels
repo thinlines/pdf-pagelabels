@@ -24,15 +24,17 @@ def page_label_args_generator(args):
 
 def add_page_labels(input_file, output_file, label_specs):
     reader = PdfReader(input_file)
-    writer = PdfWriter(reader)
+    writer = PdfWriter(clone_from=reader)
 
     for spec in label_specs:
         start_page, end_page = parse_page_range(spec["range"])
         if not end_page:
-            end_page = len(reader.pages) - 1
+            end_page = len(reader.pages)
+
+        print(f"start {start_page}\tend {end_page}")
         writer.set_page_label(
             start_page - 1,
-            end_page - start_page + 1,
+            end_page - 1,
             style=spec["style"],
             prefix=spec["prefix"],
             start=spec["start"],
@@ -93,6 +95,11 @@ def main():
         dest="page_range",
         action="append",
     )
+    test_args = [
+        "" if s == '""' else s
+        for s in '/home/randy/in.pdf /home/randy/out.pdf 1-3 -p "" 4-end -s D'.split()
+    ]
+    # io_args = parser.parse_args(test_args)
     io_args = parser.parse_args()
 
     page_label_parser = argparse.ArgumentParser()
