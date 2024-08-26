@@ -16,10 +16,7 @@ positional arguments:
 
 options:
   -h, --help            show this help message and exit
-  -s PAGE_RANGE, --style PAGE_RANGE
-                        Page label style, one of D, R, r, A, or a
-  -p PAGE_RANGE, --prefix PAGE_RANGE
-                        Page label prefix
-  -t PAGE_RANGE, --start PAGE_RANGE
-                        Starting number for page labels
+  -s S, --style S       Page label style, one of D, R, r, A, or a
+  -p P, --prefix P      Page label prefix
+  -t NUM, --start NUM   Starting number for page labels
 ```
