@@ -4,7 +4,7 @@ A small Python command line tool to add page labels to PDFs
 
 Here's the help message:
 
-```python
+```plain
 usage: pdf-pagelabels input output page_range [OPTIONS] [page_range [OPTIONS]...]
 
 Add page labels to a PDF file
