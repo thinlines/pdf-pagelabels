@@ -1,0 +1,123 @@
+#!/usr/bin/env python3
+
+import argparse
+from pypdf import PdfReader, PdfWriter
+
+
+def page_label_args_generator(args):
+    result = []
+    i = 0
+    while i < len(args):
+        if args[i].startswith("-"):
+            result.extend([args[i], args[i + 1]])
+            i += 2
+        else:
+            if result:
+                yield result
+                result = [args[i]]
+                i += 1
+                continue
+            result.append(args[i])
+            i += 1
+    yield result
+
+
+def add_page_labels(input_file, output_file, label_specs):
+    reader = PdfReader(input_file)
+    writer = PdfWriter(reader)
+
+    for spec in label_specs:
+        start_page, end_page = parse_page_range(spec["range"])
+        if not end_page:
+            end_page = len(reader.pages) - 1
+        writer.set_page_label(
+            start_page - 1,
+            end_page - start_page + 1,
+            style=spec["style"],
+            prefix=spec["prefix"],
+            start=spec["start"],
+        )
+
+    with open(output_file, "wb") as file:
+        writer.write(file)
+
+
+def parse_page_range(range_str):
+    parts = range_str.split("-")
+    if len(parts) == 1:
+        return int(parts[0]), int(parts[0])
+    elif len(parts) == 2:
+        start = int(parts[0])
+        if parts[1] == "" or parts[1].lower() == "end":
+            return start, None
+        return start, int(parts[1])
+    else:
+        raise ValueError("Invalid page range format")
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Add page labels to a PDF file",
+        usage="%(prog)s input output page_range [OPTIONS] [page_range [OPTIONS]...]",
+    )
+    parser.add_argument("input", help="Input PDF file")
+    parser.add_argument("output", help="Output PDF file")
+    parser.add_argument(
+        "page_range",
+        metavar="page_range [OPTIONS]",
+        nargs=argparse.REMAINDER,
+        help="Page range and label specifications",
+    )
+
+    # Page label options
+    parser.add_argument(
+        "-s",
+        "--style",
+        help="Page label style, one of D, R, r, A, or a",
+        dest="page_range",
+        action="append",
+    )
+    parser.add_argument(
+        "-p",
+        "--prefix",
+        help="Page label prefix",
+        dest="page_range",
+        action="append",
+        type=str,
+    )
+    parser.add_argument(
+        "-t",
+        "--start",
+        type=int,
+        help="Starting number for page labels",
+        dest="page_range",
+        action="append",
+    )
+    test_args = [
+        "" if s == '""' else s for s in 'in.pdf out.pdf 1-2 -p "" 3-end -s "/D"'.split()
+    ]
+    # io_args = parser.parse_args(test_args)
+    io_args = parser.parse_args()
+
+    page_label_parser = argparse.ArgumentParser()
+    page_label_parser.add_argument("page_range")
+    page_label_parser.add_argument("-s", "--style", choices=["D", "R", "r", "A", "a"])
+    page_label_parser.add_argument("-p", "--prefix")
+    page_label_parser.add_argument("-t", "--start", type=int)
+
+    specs = []
+    for arg_list in page_label_args_generator(io_args.page_range):
+        page_label_args = page_label_parser.parse_args(arg_list)
+        spec = {
+            "range": page_label_args.page_range,
+            "style": f"/{page_label_args.style}",
+            "prefix": page_label_args.prefix,
+            "start": page_label_args.start if page_label_args.start else 1,
+        }
+        specs.append(spec)
+    specs
+    add_page_labels(io_args.input, io_args.output, specs)
+
+
+if __name__ == "__main__":
+    main()
