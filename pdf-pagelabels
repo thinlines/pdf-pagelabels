@@ -77,6 +77,7 @@ def main():
         "--style",
         help="Page label style, one of D, R, r, A, or a",
         dest="page_range",
+        metavar="S",
         action="append",
     )
     parser.add_argument(
@@ -84,6 +85,7 @@ def main():
         "--prefix",
         help="Page label prefix",
         dest="page_range",
+        metavar="P",
         action="append",
         type=str,
     )
@@ -92,6 +94,7 @@ def main():
         "--start",
         type=int,
         help="Starting number for page labels",
+        metavar="NUM",
         dest="page_range",
         action="append",
     )
