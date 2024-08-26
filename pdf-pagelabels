@@ -94,23 +94,28 @@ def main():
         action="append",
     )
     test_args = [
-        "" if s == '""' else s for s in 'in.pdf out.pdf 1-2 -p "" 3-end -s "/D"'.split()
+        "" if s == '""' else s for s in '/home/randy/in.pdf /home/randy/out.pdf 1-2 -p "" 3-end -s D'.split()
     ]
-    # io_args = parser.parse_args(test_args)
-    io_args = parser.parse_args()
+    io_args = parser.parse_args(test_args)
+    # io_args = parser.parse_args()
 
     page_label_parser = argparse.ArgumentParser()
     page_label_parser.add_argument("page_range")
     page_label_parser.add_argument("-s", "--style", choices=["D", "R", "r", "A", "a"])
-    page_label_parser.add_argument("-p", "--prefix")
+    page_label_parser.add_argument("-p", "--prefix", default=None)
     page_label_parser.add_argument("-t", "--start", type=int)
 
     specs = []
     for arg_list in page_label_args_generator(io_args.page_range):
         page_label_args = page_label_parser.parse_args(arg_list)
+        if page_label_args.style:
+            style = f"/{page_label_args.style}"
+        else:
+            style = None
+
         spec = {
             "range": page_label_args.page_range,
-            "style": f"/{page_label_args.style}",
+            "style": style,
             "prefix": page_label_args.prefix,
             "start": page_label_args.start if page_label_args.start else 1,
         }
