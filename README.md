@@ -2,7 +2,7 @@
 
 A small Python command line tool to add page labels to PDFs
 
-Call me pedantic, but I hate it when the page numbers of a scanned PDF document don't line up with the page numbers that the PDf viewer shows. So, I wrote this script to fix that.
+Call me pedantic, but I hate it when the page numbers of a scanned PDF document don't line up with the page numbers that the PDF viewer shows. So, I wrote this script to fix that.
 
 ## Installation
 
